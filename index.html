@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Tienda UJTL — Merch Oficial</title>
+  <meta name="description" content="Tienda demo — Universidad Jorge Tadeo Lozano (merch). HTML/CSS/JS puro."/>
+  <style>
+    :root{
+      /* Paleta inspirada en Universidad Jorge Tadeo Lozano */
+      --bg: #f5f6fb;        /* fondo claro */
+      --panel: #071033;     /* azul oscuro para paneles */
+      --card: #ffffff;      /* tarjetas blancas */
+      --text: #0b1220;      /* texto principal */
+      --muted: #5a6b87;
+      --accent: #e0007a;    /* magenta rosa (acento) */
+      --ok: #0f9d58;
+      --warn: #d9534f;
+      --border: #e6e9f2;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      padding:22px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background: linear-gradient(90deg, rgba(224,0,122,0.06), rgba(7,16,51,0.06));
+      padding:18px;
+      border-radius:12px;
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:18px;
+      border:1px solid var(--border);
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:68px; height:68px; border-radius:8px; background:linear-gradient(180deg,var(--accent),#a1005f);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;
+      box-shadow:0 6px 18px rgba(14,12,32,0.08);
+    }
+    h1{margin:0;font-size:20px;color:var(--panel)}
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    .layout{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+
+    /* Productos */
+    #productos{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap:14px;
+    }
+    .producto{
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+      border:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      box-shadow:0 6px 14px rgba(11,17,30,0.03);
+    }
+    .producto img{width:100%;height:280px;object-fit:cover;border-radius:8px;background:#f0f0f4}
+    .producto h3{margin:0;font-size:16px;color:var(--panel)}
+    .producto p{margin:0;color:var(--muted);font-size:13px}
+    .precio{font-weight:700;color:var(--accent);font-size:15px}
+
+    .button{
+      margin-top:auto;
+      background:var(--accent);
+      color:white;
+      border:none;
+      padding:10px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .button:active{transform:translateY(1px)}
+    .small{font-size:13px;padding:8px 10px;border-radius:8px}
+
+    /* Carrito */
+    .carrito{
+      background: linear-gradient(180deg, #fff, #fbfbff);
+      padding:14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      position:sticky;
+      top:22px;
+    }
+    .carrito h2{margin:0 0 8px 0;color:var(--panel)}
+    #lista-carrito{list-style:none;padding:0;margin:12px 0 0;max-height:340px;overflow:auto}
+    #lista-carrito li{
+      display:flex;justify-content:space-between;align-items:center;gap:8px;
+      background: #fff; padding:8px;border-radius:8px;border:1px solid #f0f2fb;margin-bottom:8px;
+      box-shadow:0 4px 10px rgba(9,12,30,0.03);
+    }
+    .qty{display:flex;align-items:center;gap:6px}
+    .qty button{border:1px solid var(--border);background:transparent;padding:6px 8px;border-radius:6px;cursor:pointer}
+    .remove{background:transparent;border:1px solid #ffdfe9;color:var(--warn);padding:6px 8px;border-radius:6px;cursor:pointer}
+
+    .totales p{margin:6px 0;font-size:14px}
+    .totales .total{font-size:18px;font-weight:700;color:var(--panel)}
+    .acciones{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .vaciar{background:transparent;border:1px solid var(--border);padding:10px 12px;border-radius:8px;cursor:pointer}
+    .finalizar{background:var(--panel);color:white;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+
+    .pago{margin-top:12px;padding:10px;border-radius:8px;border:1px dashed var(--border);background:#fff}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .layout{grid-template-columns: 1fr; }
+      .carrito{position:relative; top:auto}
+    }
+  </style>
+</head>
+<body>
+  <header role="banner" aria-label="cabecera tienda">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">UJTL</div>
+      <div>
+        <h1>Tienda Oficial — Universidad Jorge Tadeo Lozano</h1>
+        <p>Merch y artículos institucionales — Pago en sandbox para pruebas</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout" id="main" tabindex="-1">
+    <section>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+        <label for="categoria">Filtrar categoría:</label>
+        <select id="categoria" name="categoria" aria-label="Filtrar por categoría" class="small">
+          <option value="todos">Todos</option>
+          <option value="Merch">Merch</option>
+          <option value="Ropa">Ropa</option>
+          <option value="Accesorios">Accesorios</option>
+        </select>
+
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <span style="font-size:13px;color:var(--muted)">Moneda:</span>
+          <strong style="color:var(--panel)">COP</strong>
+        </div>
+      </div>
+
+      <section id="productos" aria-live="polite" aria-busy="false"></section>
+    </section>
+
+    <aside class="carrito" aria-label="Carrito de compras">
+      <h2>🛒 Carrito</h2>
+      <p><strong>Items: <span id="cantidad-carrito">0</span></strong></p>
+      <ul id="lista-carrito"></ul>
+
+      <div class="totales" style="border-top:1px dashed var(--border);padding-top:10px;margin-top:8px">
+        <p>Subtotal: <strong id="subtotal-text">COP $0</strong></p>
+        <p>Descuento: <strong id="descuento-text">COP $0</strong></p>
+        <p>Impuestos (IVA 19%): <strong id="impuestos-text">COP $0</strong></p>
+        <p class="total">Total: <strong id="total-text">COP $0</strong></p>
+      </div>
+
+      <div class="acciones">
+        <button id="btn-vaciar" class="vaciar" type="button">🧼 Vaciar</button>
+        <button id="btn-finalizar" class="finalizar" type="button">✅ Finalizar</button>
+      </div>
+
+      <div class="pago" aria-hidden="false">
+        <h3 style="margin:0 0 8px 0">💳 Pago</h3>
+        <div id="paypal-button-container" style="display:none"></div>
+        <p class="hint">⚠️ Test: PayPal sandbox. Reemplaza <code>client-id</code> en el SDK por tu Client ID de pruebas antes de producción.</p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- PayPal SDK: client-id=sb (sandbox). Cambia 'sb' por tu client-id de pruebas -->
+  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=COP&components=buttons,funding-eligibility"></script>
+
+  <script>
+    /* ---------- CONFIG ---------- */
+    const MONEDA = 'COP';
+    const LOCALE = 'es-CO';
+    const TAX_RATE = 0.19;   // IVA 19%
+    const DESCUENTO = 0.00; // descuento fijo opcional
+
+    /* ---------- DATA: tu producto (usé la URL que pegaste) ---------- */
+    const productos = [
+      {
+        id: 101,
+        nombre: 'Sudadera Oficial — Universidad Jorge Tadeo Lozano',
+        precio: 78000, // en COP
+        categoria: 'Ropa',
+        img: 'https://lh3.googleusercontent.com/gg-dl/ABS2GSmUPjH1CK9u8GaEWzFeY89v_yQeJNKd7916hbDmr4PUc3Q0J1KEj9zjgOEXWTmqpKdDtQ_qzusRL-8WP7hGyeYWb48zWoiMEWo_flWQC3Et8atNAKSy7O9Uwi6JyipdDkD3OIoShLqce0cGXlkckqI_BayR5aTWk1ICUtQ_TsNpqjBk=s1024-rj'
+      },
+      // Si quieres añadir más productos, añade objetos similares aquí.
+    ];
+
+    /* ---------- ESTADO y SELECTORES ---------- */
+    let carrito = new Map();
+
+    const $ = id => document.getElementById(id);
+    const el = {
+      contProds: $('productos'),
+      lista: $('lista-carrito'),
+      subtotal: $('subtotal-text'),
+      impuestos: $('impuestos-text'),
+      descuento: $('descuento-text'),
+      total: $('total-text'),
+      cantidad: $('cantidad-carrito'),
+      select: $('categoria'),
+      btnVaciar: $('btn-vaciar'),
+      btnFinal: $('btn-finalizar'),
+      paypal: $('paypal-button-container')
+    };
+
+    const money = new Intl.NumberFormat(LOCALE, { style:'currency', currency: MONEDA });
+
+    /* ---------- RENDER PRODUCTOS ---------- */
+    function renderProductos(lista){
+      el.contProds.setAttribute('aria-busy', 'true');
+      el.contProds.innerHTML = '';
+      if (!Array.isArray(lista) || lista.length === 0) {
+        el.contProds.innerHTML = '<div style="padding:18px;background:#fff;border-radius:12px;border:1px dashed var(--border);color:var(--muted)">No hay productos. Edita el array <code>productos</code>.</div>';
+        el.contProds.setAttribute('aria-busy','false');
+        return;
+      }
+      lista.forEach(p=>{
+        const card = document.createElement('article');
+        card.className = 'producto';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p class="precio">${money.format(Number(p.precio)||0)}</p>
+          <p style="color:var(--muted);font-size:13px;margin-top:4px">Categoría: ${p.categoria}</p>
+          <button class="button" data-add="${p.id}">Agregar al carrito</button>
+        `;
+        const img = card.querySelector('img');
+        img.addEventListener('error', ()=> {
+          img.src = 'https://via.placeholder.com/600x800?text=Imagen+no+disponible';
+          img.alt = p.nombre + ' (imagen no disponible)';
+        });
+        el.contProds.appendChild(card);
+      });
+      el.contProds.setAttribute('aria-busy','false');
+    }
+
+    /* ---------- FILTRO ---------- */
+    function filtrar(){
+      const s = el.select.value;
+      const d = s === 'todos' ? productos : productos.filter(p => String(p.categoria) === s);
+      renderProductos(d);
+      localStorage.setItem('filtro_categoria', s);
+    }
+    function cargarFiltro(){
+      const f = localStorage.getItem('filtro_categoria');
+      if (f) el.select.value = f;
+    }
+
+    /* ---------- CARRITO y PERSISTENCIA ---------- */
+    function persist(){ localStorage.setItem('carrito', JSON.stringify(Array.from(carrito.entries()))); }
+    function load(){
+      const raw = localStorage.getItem('carrito');
+      if (raw) carrito = new Map(JSON.parse(raw));
+    }
+
+    function totales(){
+      const subtotal = [...carrito.values()].reduce((acc,it)=> acc + Number(it.precio)*Number(it.cantidad), 0);
+      const descuento = Math.min(DESCUENTO, subtotal);
+      const base = subtotal - descuento;
+      const impuestos = +(base * TAX_RATE);
+      const total = +(base + impuestos);
+      const cantidad = [...carrito.values()].reduce((a,i)=> a + Number(i.cantidad), 0);
+      return { subtotal, descuento, impuestos, total, cantidad };
+    }
+
+    function pintarCarrito(){
+      el.lista.innerHTML = '';
+      if (carrito.size === 0) {
+        el.lista.innerHTML = '<li style="background:transparent;border:none;padding:6px;color:var(--muted)">El carrito está vacío.</li>';
+      } else {
+        carrito.forEach(it=>{
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div style="max-width:170px">
+              <strong style="display:block">${it.nombre}</strong>
+              <small style="color:var(--muted)">${money.format(it.precio)}</small>
+            </div>
+            <div class="qty">
+              <button aria-label="Disminuir" data-dec="${it.id}">−</button>
+              <span style="min-width:20px;text-align:center">${it.cantidad}</span>
+              <button aria-label="Aumentar" data-inc="${it.id}">+</button>
+              <button class="remove" aria-label="Eliminar" data-del="${it.id}">❌</button>
+            </div>
+          `;
+          el.lista.appendChild(li);
+        });
+      }
+
+      const {subtotal,descuento,impuestos,total,cantidad} = totales();
+      el.subtotal.textContent = money.format(subtotal);
+      el.descuento.textContent = money.format(descuento);
+      el.impuestos.textContent = money.format(impuestos);
+      el.total.textContent = money.format(total);
+      el.cantidad.textContent = cantidad;
+
+      el.paypal.style.display = total > 0 ? 'block' : 'none';
+      renderPayPal(total);
+    }
+
+    function add(id){
+      const p = productos.find(x=> x.id === id);
+      if(!p) return alert('Producto no encontrado en el dataset.');
+      const it = carrito.get(id);
+      if (it) it.cantidad = Number(it.cantidad) + 1;
+      else carrito.set(id, {...p, cantidad:1});
+      persist(); pintarCarrito();
+    }
+    function dec(id){
+      const it = carrito.get(id); if(!it) return;
+      it.cantidad = Number(it.cantidad) - 1;
+      if (it.cantidad <= 0) carrito.delete(id);
+      persist(); pintarCarrito();
+    }
+    function del(id){
+      carrito.delete(id); persist(); pintarCarrito();
+    }
+
+    /* ---------- PAYPAL (sandbox) ---------- */
+    let paypalRenderedTotal = null;
+    function renderPayPal(total){
+      if (!window.paypal) return;
+      // si total <=0 limpiamos
+      if (total <= 0) {
+        paypalRenderedTotal = null;
+        el.paypal.innerHTML = '';
+        return;
+      }
+      // evitar re-render innecesario si el total no cambió
+      if (paypalRenderedTotal === total && el.paypal.childElementCount > 0) return;
+      paypalRenderedTotal = total;
+      el.paypal.innerHTML = '';
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: total.toFixed(2), currency_code: MONEDA }
+            }]
+          });
+        },
+        onApprove: (data, actions) => actions.order.capture().then(details => {
+          alert(`¡Pago recibido! Gracias, ${details?.payer?.name?.given_name || 'cliente'}.`);
+          carrito.clear(); persist(); pintarCarrito();
+        }),
+        onError: err => {
+          console.error(err);
+          alert('Error durante el pago. Reintenta.');
+        }
+      }).render('#paypal-button-container');
+    }
+
+    /* ---------- EVENTOS ---------- */
+    document.addEventListener('click', e => {
+      const addBtn = e.target.closest('[data-add]'); if (addBtn) add(+addBtn.dataset.add);
+      const incBtn = e.target.closest('[data-inc]'); if (incBtn) add(+incBtn.dataset.inc);
+      const decBtn = e.target.closest('[data-dec]'); if (decBtn) dec(+decBtn.dataset.dec);
+      const delBtn = e.target.closest('[data-del]'); if (delBtn) del(+delBtn.dataset.del);
+    });
+    el.select.addEventListener('change', filtrar);
+    el.btnVaciar.addEventListener('click', ()=> {
+      if (confirm('¿Vaciar carrito?')) { carrito.clear(); persist(); pintarCarrito(); }
+    });
+    el.btnFinal.addEventListener('click', ()=> {
+      if (carrito.size === 0) return alert('Carrito vacío.');
+      alert('Pedido simulado: ¡Gracias por tu compra! (sin pago real).');
+      carrito.clear(); persist(); pintarCarrito();
+    });
+
+    /* ---------- INIT ---------- */
+    (function init(){
+      cargarFiltro();
+      renderProductos(productos);
+      load();
+      pintarCarrito();
+      document.getElementById('main')?.focus({preventScroll:true});
+    })();
+
+  </script>
+</body>
+</html>
